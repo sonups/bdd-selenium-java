@@ -17,10 +17,12 @@ Table of contents
 <!--ts-->
 
   * [Built With](#built-with)
-  * [1. To run all cases use tag - @all (tested in windows 10 & ubuntu)](#1-to-run-all-cases-use-tag---all-tested-in-windows-10--ubuntu)
-  * [2. Tags](#2-tags)
-  * [3. Browser configuration](#3-browser-configuration)
-  * [4. Structure of Files](#4-structure-of-files)
+  * [1. Browser configuration](#1-browser-configuration)
+  * [2. To run all cases use tag - @all (tested in windows 10 & ubuntu)](#2-to-run-all-cases-use-tag---all-tested-in-windows-10--ubuntu-require-java-jdkjre-version-8)
+  * [3. Run dockerized tests in Windows using powershell](#3-run-dockerized-tests-in-windows-using-powershell)
+  * [4. Run dockerized tests in Linux](#4-run-dockerized-tests-in-linux)
+  * [5. Tags](#5-tags)
+  * [6. Structure of Files](#6-structure-of-files)
   * [Contact](#contact)
 
 
@@ -34,13 +36,49 @@ Selenium, Cucumber, mvn , Java8
 * [Java](https://www.java.com/en/)
 
 
-### 1. To run all cases use tag - @all (tested in windows 10 & ubuntu)
+ ### 1. Browser configuration
+ 
+Specifcy the browser in config.properties file ( Ensure the browser is installed and available in OS)
+
+ Location : src\test\resources\config\config.properties
+ 
+ Sample configuration (the browser which are not used should be commented by # as given below)
+   ```sh
+   browser = remote
+   #browser = chrome
+   #browser = firefox
+   ```
+   
+### 2. To run all cases use tag - @all (tested in windows 10 & ubuntu) (require java JDK/JRE version 8)
    ```sh
    git clone https://github.com/sonups/bdd-selenium-java
    cd bdd-selenium-java
    mvn compile test -Dcucumber.filter.tags="@all"
    ```
-### 2. Tags
+### 3. Run dockerized tests in Windows using powershell
+   Open a powershell console. Issue the below commands sequentially
+   ```sh
+   git clone https://github.com/sonups/bdd-selenium-java
+   cd bdd-selenium-java
+   docker build -t sps89/bdd-selenium-java .
+   docker network create myNetwork
+   docker-compose up -d
+   $cmdOutput = docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' hub
+   docker run --rm -i --name bdd-selenium-java -e SELENIUM_HUB_ADDRESS="$cmdOutput" --network="myNetwork" sps89/bdd-selenium-java
+   ```
+   
+### 4. Run dockerized tests in Linux 
+   Open a linux terminal. Issue the below commands sequentially
+   ```sh
+   git clone https://github.com/sonups/bdd-selenium-java
+   cd bdd-selenium-java
+   docker build -t sps89/bdd-selenium-java .
+   docker network create myNetwork
+   docker-compose up -d
+   cmdOutput=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' hub)
+   docker run --rm -i --name bdd-selenium-java -e SELENIUM_HUB_ADDRESS="$cmdOutput" --network="myNetwork" sps89/bdd-selenium-java
+   ```
+### 5. Tags
 
 | Specifc Tag    | Description                    | Full command                                             |
 |----------------|--------------------------------|----------------------------------------------------------|
@@ -51,22 +89,7 @@ Selenium, Cucumber, mvn , Java8
 | @send-tweet    | Executes all scenarios         | mvn compile test -Dcucumber.filter.tags="@send-tweet"    |
 | @search-page   | Executes all scenarios         | mvn compile test -Dcucumber.filter.tags="@search-page"   |
 
-
-
-
- ### 3. Browser configuration
- 
-Specifcy the browser in config.properties file ( Ensure the browser is installed and available in OS)
-
- Location : src\test\resources\config\config.properties
- 
- Sample configuration 
-   ```sh
-   #browser = firefox
-    browser = chrome
-   ```
-
- ### 4. Structure of Files 
+ ### 6. Structure of Files 
    ```sh
 ┣---- src/
 ┃----┣---- main/
