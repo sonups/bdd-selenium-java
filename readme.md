@@ -67,6 +67,12 @@ Specifcy the browser in config.properties file ( Ensure the browser is installed
    docker run --rm -i --name bdd-selenium-java -e SELENIUM_HUB_ADDRESS="$cmdOutput" --network="myNetwork" sps89/bdd-selenium-java
    ```
    
+   To delete, clean up and remove existing container use below commands (powershell):
+   ```sh
+   docker ps -q | % { docker stop $_ }
+   docker rm @(docker ps -aq)
+   ```
+   
 ### 4. Run dockerized tests in Linux 
    Open a linux terminal. Issue the below commands sequentially
    ```sh
@@ -77,6 +83,12 @@ Specifcy the browser in config.properties file ( Ensure the browser is installed
    docker-compose up -d
    cmdOutput=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' hub)
    docker run --rm -i --name bdd-selenium-java -e SELENIUM_HUB_ADDRESS="$cmdOutput" --network="myNetwork" sps89/bdd-selenium-java
+   ```
+   
+   To delete, clean up and remove existing container use below commands (linux):
+   ```sh
+      docker kill $(docker ps -q)
+      docker rm $(docker ps -a -q)
    ```
 ### 5. Tags
 
